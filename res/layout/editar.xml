@@ -1,0 +1,69 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:isScrollContainer="true"
+	android:scrollbarAlwaysDrawVerticalTrack="true" android:scrollbarStyle="outsideInset"
+	android:scrollbars="vertical">
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_height="fill_parent" android:id="@+id/linearLayout1"
+		android:orientation="vertical" android:layout_width="fill_parent"
+		android:weightSum="1">
+		<TextView android:id="@+id/textView1" android:layout_height="wrap_content"
+			android:text="Editar Contato" android:textAppearance="?android:attr/textAppearanceLarge"
+			android:layout_width="fill_parent" android:gravity="center"></TextView>
+		<LinearLayout android:layout_width="fill_parent"
+			android:id="@+id/linearLayout2" android:layout_height="wrap_content">
+			<TextView android:id="@+id/textView2" android:layout_height="wrap_content"
+				android:text="Nome" android:layout_width="56dp"></TextView>
+			<EditText android:id="@+editar/ed_nome"
+				android:layout_height="wrap_content" android:layout_width="151dp">
+				<requestFocus></requestFocus>
+			</EditText>
+		</LinearLayout>
+		<LinearLayout android:layout_width="fill_parent"
+			android:id="@+id/LinearLayout01" android:layout_height="wrap_content">
+			<TextView android:layout_width="wrap_content" android:id="@+id/TextView01"
+				android:layout_height="wrap_content" android:text="Telefone"></TextView>
+			<EditText android:id="@+editar/ed_tel"
+				android:layout_height="wrap_content" android:layout_width="151dp"></EditText>
+		</LinearLayout>
+		<LinearLayout android:layout_width="fill_parent"
+			android:id="@+id/LinearLayout02" android:layout_height="wrap_content">
+			<TextView android:id="@+id/TextView02"
+				android:layout_height="wrap_content" android:text="Celular"
+				android:layout_width="56dp"></TextView>
+			<EditText android:id="@+editar/ed_cel"
+				android:layout_height="wrap_content" android:layout_width="149dp"></EditText>
+		</LinearLayout>
+		<LinearLayout android:layout_width="fill_parent"
+			android:id="@+id/LinearLayout03" android:layout_height="wrap_content">
+			<TextView android:id="@+id/TextView03"
+				android:layout_height="wrap_content" android:text="E-Mail"
+				android:layout_width="55dp"></TextView>
+			<EditText android:layout_weight="1" android:id="@+editar/ed_email"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"></EditText>
+		</LinearLayout>
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:id="@+editar/LinearLayoutFoto">
+			<TextView android:id="@+editar/tv_novafoto"
+				android:layout_height="wrap_content" android:text="Nova Foto"
+				android:layout_width="66dp"></TextView>
+			<EditText android:layout_weight="1" android:layout_height="wrap_content"
+				android:layout_width="235dp" android:id="@+editar/campo_novafoto"></EditText>
+			<Button android:text="Carregar" android:id="@+editar/foto_carregar" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+		</LinearLayout>
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:id="@+id/LinearLayout04">
+			<TextView android:id="@+id/TextView04"
+				android:layout_height="wrap_content" android:text="Foto" android:layout_width="wrap_content"></TextView>
+			<ImageView android:layout_height="150px" android:id="@+editar/foto"
+				android:src="@drawable/icon" android:layout_width="98dp"></ImageView>
+			<Button android:layout_height="wrap_content" android:id="@+editar/foto_alterar"
+				android:layout_width="wrap_content" android:text="Alterar"></Button>
+			<Button android:layout_height="wrap_content" android:id="@+editar/foto_excluir" android:layout_width="wrap_content" android:text="Excluir"></Button>
+		</LinearLayout>
+		<Button android:text="OK" android:layout_height="wrap_content"
+			android:id="@+editar/botao_ok" android:layout_width="fill_parent"></Button>
+		<Button android:text="Cancelar" android:layout_height="wrap_content"
+			android:id="@+editar/botao_cancelar" android:layout_width="fill_parent"></Button>
+	</LinearLayout>
+</ScrollView>

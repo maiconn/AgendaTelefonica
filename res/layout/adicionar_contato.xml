@@ -1,0 +1,73 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:isScrollContainer="true"
+	android:scrollbarAlwaysDrawVerticalTrack="true" android:scrollbarStyle="outsideInset"
+	android:scrollbars="vertical">
+	<LinearLayout android:id="@+id/linearLayout1"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="vertical">
+		<TextView android:text="Adicionar Contato"
+			android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"
+			android:id="@+id/textView1" android:layout_width="fill_parent"
+			android:gravity="center"></TextView>
+		<LinearLayout android:id="@+id/linearLayout2"
+			android:layout_height="wrap_content" android:layout_width="fill_parent">
+			<TextView android:text="Nº " android:id="@+id/textView2"
+				android:layout_height="wrap_content" android:layout_width="63dp"></TextView>
+			<EditText android:layout_height="wrap_content"
+				android:enabled="false" android:id="@+adicionar_contato/campo_codigo"
+				android:layout_width="54dp"></EditText>
+		</LinearLayout>
+		<LinearLayout android:id="@+id/linearLayout2"
+			android:layout_height="wrap_content" android:layout_width="fill_parent">
+			<TextView android:text="Nome: " android:id="@+id/textView2"
+				android:layout_height="wrap_content" android:layout_width="63dp"></TextView>
+			<EditText android:layout_height="wrap_content"
+				android:id="@+adicionar_contato/campo_nome" android:layout_width="fill_parent">
+
+			</EditText>
+		</LinearLayout>
+		<LinearLayout android:id="@+id/linearLayout2"
+			android:layout_height="wrap_content" android:layout_width="fill_parent">
+			<TextView android:text="Telefone: " android:id="@+id/textView2"
+				android:layout_height="wrap_content" android:layout_width="63dp"></TextView>
+			<EditText android:layout_height="wrap_content"
+				android:id="@+adicionar_contato/campo_telefone"
+				android:layout_width="170dp">
+
+			</EditText>
+		</LinearLayout>
+		<LinearLayout android:id="@+id/linearLayout2"
+			android:layout_height="wrap_content" android:layout_width="fill_parent">
+			<TextView android:text="Celular: " android:id="@+id/textView2"
+				android:layout_height="wrap_content" android:layout_width="62dp"></TextView>
+			<EditText android:layout_height="wrap_content"
+				android:id="@+adicionar_contato/campo_celular" android:layout_width="170dp">
+
+			</EditText>
+		</LinearLayout>
+		<LinearLayout android:id="@+id/linearLayout2"
+			android:layout_height="wrap_content" android:layout_width="fill_parent">
+			<TextView android:text="E-Mail: " android:id="@+id/textView2"
+				android:layout_height="wrap_content" android:layout_width="63dp"></TextView>
+			<EditText android:layout_height="wrap_content"
+				android:id="@+adicionar_contato/campo_email" android:layout_width="fill_parent">
+			</EditText>
+		</LinearLayout>
+		<LinearLayout android:layout_width="fill_parent"
+			android:id="@+id/LinearLayout01" android:layout_height="wrap_content">
+			<TextView android:layout_width="63dp" android:id="@+id/textView20"
+				android:layout_height="wrap_content" android:text="Foto: "></TextView>
+			<EditText android:layout_weight="1" android:id="@+adicionar_contato/EdFoto"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"></EditText>
+		</LinearLayout>
+		<Button android:layout_height="wrap_content" android:id="@+adicionar_contato/botao_carregarimagem" android:text="Carregar Foto" android:layout_width="wrap_content"></Button>
+		<ImageView android:layout_height="100px" android:id="@+adicionar_contato/FotoLoad" android:layout_width="100px" android:src="@drawable/icon"></ImageView>
+		<Button android:layout_height="wrap_content"
+			android:id="@+adicionar_contato/botao_Adicionar" android:text="Adicionar Contato"
+			android:layout_width="fill_parent"></Button>
+		<Button android:layout_height="wrap_content"
+			android:id="@+adicionar_contato/botao_Cancelar" android:text="Cancelar"
+			android:layout_width="fill_parent"></Button>
+	</LinearLayout>
+</ScrollView>
