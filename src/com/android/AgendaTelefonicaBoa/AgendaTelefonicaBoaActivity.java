@@ -1,27 +1,19 @@
 package com.android.AgendaTelefonicaBoa;
 
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-
-import org.apache.http.util.ByteArrayBuffer;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -32,13 +24,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class AgendaTelefonicaBoaActivity extends Activity {
-	private static final String CAMINHO_FOTO = "/data/data/com.android.AgendaTelefonicaBoa/files/";
+import com.android.utils.ConstantsUtils;
+import com.android.utils.ImagemUtils;
 
+public class AgendaTelefonicaBoaActivity extends Activity {
+	
 	private Button bt_main_verContatos, bt_main_add_contato,
 	bt_addcontato_Add_Contato, bt_addcontato_Cancelar,
 	bt_contatoSelecionado_Editar, bt_contatoSelecionado_Excluir, bt_contatoSelecionado_Voltar,
-	bt_verContatos_voltar,
 	bt_editar_ok, bt_editar_cancelar, bt_carregarimagem,
 	bt_editar_carregar, bt_editar_alterar, bt_editar_excluir_foto;
 	private EditText ed_addcontato_codigo, ed_addcontato_nome, ed_addcontato_tel, ed_addcontato_cel, ed_addcontato_email,
@@ -58,16 +51,17 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 	boolean isCancelButton = false;
 	boolean isNewFoto = false;
 	boolean isFotoExcluida = false;
+	private boolean estaEditando = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
 		database = new DBAcess(this);
-		InitTelaInicial();		
+		iniciaTelaInicial();		
 	}
 
-	private void InitTelaInicial(){
-		setContentView(R.layout.main);
+	private void iniciaTelaInicial(){
 		bt_main_verContatos = (Button) findViewById(R.id.visualizar_contatos);
 		bt_main_add_contato = (Button) findViewById(R.id.adicionar_contato);
 
@@ -75,117 +69,25 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				InitAdicionarContato();
+				iniciaAdicionarContato();
 			}
 		});		
 		bt_main_verContatos.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				InitListaContatos();
+				iniciaListaContatos();
 			}
 		});	
 	}
 
-	private void InitAdicionarContato(){
-		setContentView(R.layout.adicionar_contato);
-		bt_addcontato_Add_Contato = (Button) findViewById(R.adicionar_contato.botao_Adicionar);
-		bt_addcontato_Cancelar = (Button) findViewById(R.adicionar_contato.botao_Cancelar);
-		ed_addcontato_nome = (EditText) findViewById(R.adicionar_contato.campo_nome);
-		ed_addcontato_codigo = (EditText) findViewById(R.adicionar_contato.campo_codigo);
-		ed_addcontato_tel = (EditText) findViewById(R.adicionar_contato.campo_telefone);
-		ed_addcontato_cel = (EditText) findViewById(R.adicionar_contato.campo_celular);
-		ed_addcontato_email = (EditText) findViewById(R.adicionar_contato.campo_email);
-		ed_addcontato_foto = (EditText) findViewById(R.adicionar_contato.EdFoto);
-		bt_carregarimagem = (Button) findViewById(R.adicionar_contato.botao_carregarimagem);
-		imagemLoad = (ImageView) findViewById(R.adicionar_contato.FotoLoad);
-
-		bt_carregarimagem.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				url = ed_addcontato_foto.getText().toString();
-				if (!url.equals("")){
-					new Progresso().execute(url);
-				} else {
-					alertas.showSimpleDialog("Foto", "Digite um caminho da web para carregar a foto!", AgendaTelefonicaBoaActivity.this);
-					isFotoCarregada = false;
-					imagemLoad.setImageResource(R.drawable.icon);
-				}
-			}
-		});
-
-		bt_addcontato_Cancelar.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				InitTelaInicial();
-			}
-		});
-
-		String codigo = Integer.toString(database.getProxCodigo());
-		ed_addcontato_codigo.setText(codigo);
-
-		bt_addcontato_Add_Contato.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				String nome = ed_addcontato_nome.getText().toString();
-				String tel = ed_addcontato_tel.getText().toString();
-				String cel = ed_addcontato_cel.getText().toString();
-				String email = ed_addcontato_email.getText().toString();
-				String numero = ed_addcontato_codigo.getText().toString();
-
-				if (tel.equals("")){
-					tel = "(Não Cadastrado)";
-				}
-				if (cel.equals("")){
-					cel = "(Não Cadastrado)";
-				}
-				if (email.equals("")){
-					email = "(Não Cadastrado)";
-				}
-
-				if (!nome.equals("")){
-					if (!database.isNomeExistente(nome)){
-						if (!tel.equals("(Não Cadastrado)") || !cel.equals("(Não Cadastrado)") || !email.equals("(Não Cadastrado)")){
-							if (isFotoCarregada){
-								DownloadFromUrl(url, CAMINHO_FOTO+numero+".jpg");
-								database.insertContato(numero, nome, tel, cel, email, "true");								
-								alertas.showSimpleDialog("Sucesso", "Contato Adicionado Com Sucesso!", AgendaTelefonicaBoaActivity.this);
-								isFotoCarregada = false;
-								InitAdicionarContato();
-							} else {
-								database.insertContato(numero, nome, tel, cel, email, "false");
-								alertas.showSimpleDialog("Sucesso", "Contato Adicionado Com Sucesso!", AgendaTelefonicaBoaActivity.this);
-								InitAdicionarContato();
-							}
-						} else {
-							alertas.showSimpleDialog("Contato", "Precisa ter ao menos um meio de contato!", AgendaTelefonicaBoaActivity.this);
-						}
-					} else {
-						alertas.showSimpleDialog("Nome", "Nome Já Cadastrado Na Lista!", AgendaTelefonicaBoaActivity.this);
-					}
-				} else {
-					alertas.showSimpleDialog("Nome", "Digite um nome para o contato!", AgendaTelefonicaBoaActivity.this);
-				}
-			}
-		});
-
+	private void iniciaAdicionarContato(){
+		startActivity(new Intent(this, TelaNovoContato.class));
 	}
 
-	private void InitListaContatos(){
+	private void iniciaListaContatos(){
 		setContentView(R.layout.ver_contatos);		
-		bt_verContatos_voltar = (Button) findViewById(R.verContatos.botao_voltar);
 		listaContatos = (ListView) findViewById(R.verContatos.listaContatos);
-		bt_verContatos_voltar = (Button) findViewById(R.verContatos.botao_voltar);
-
-		bt_verContatos_voltar.setOnClickListener(new View.OnClickListener() {					
-			@Override
-			public void onClick(View v) {
-				InitTelaInicial();						
-			}
-		});
 
 		ArrayList<String> nomes = new ArrayList<String>();
 
@@ -236,9 +138,9 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 					tv_contatoSelecionado_email.setText(email);
 
 					Bitmap bm = null;
-					File file = new File(CAMINHO_FOTO+codigo+".jpg");
+					File file = new File(ConstantsUtils.CAMINHO_FOTO+codigo+".jpg");
 					if (file.exists()){
-						bm = BitmapFactory.decodeFile(CAMINHO_FOTO+codigo+".jpg");
+						bm = BitmapFactory.decodeFile(ConstantsUtils.CAMINHO_FOTO+codigo+".jpg");
 						imageView.setImageBitmap(bm);
 					} else {
 						imageView.setImageResource(R.drawable.icon);
@@ -302,7 +204,7 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 
 								@Override
 								public void onClick(View v) {
-									InitListaContatos();
+									iniciaListaContatos();
 
 								}
 							});
@@ -314,13 +216,13 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 							cel = getContato.get(3);
 							email = getContato.get(4);
 
-							if (tel.equals("(Não Cadastrado)")){
+							if (tel.equals("(Nï¿½o Cadastrado)")){
 								tel = "";
 							}
-							if (cel.equals("(Não Cadastrado)")){
+							if (cel.equals("(Nï¿½o Cadastrado)")){
 								cel = "";
 							}
-							if (email.equals("(Não Cadastrado)")){
+							if (email.equals("(Nï¿½o Cadastrado)")){
 								email = "";
 							}
 
@@ -331,10 +233,12 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 
 							bt_editar_ok.setOnClickListener(new View.OnClickListener() {
 
+								
+
 								@Override
 								public void onClick(View v) {
 									if (isFotoExcluida){
-										File file = new File(CAMINHO_FOTO+cod+".jpg");
+										File file = new File(ConstantsUtils.CAMINHO_FOTO+cod+".jpg");
 										if (file.exists()){
 											file.delete();
 											imageAlter.setImageResource(R.drawable.icon);	
@@ -347,16 +251,16 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 									newEmail = ed_editar_email.getText().toString();
 
 									if (newTel.equals("")){
-										newTel = "(Não Cadastrado)";
+										newTel = "(Nï¿½o Cadastrado)";
 									}
 									if (newCel.equals("")){
-										newCel = "(Não Cadastrado)";
+										newCel = "(Nï¿½o Cadastrado)";
 									}
 									if (newEmail.equals("")){
-										newEmail = "(Não Cadastrado)";
+										newEmail = "(Nï¿½o Cadastrado)";
 									}
 									if (isNewFoto){
-										DownloadFromUrl(url, CAMINHO_FOTO+codigo+".jpg");
+										ImagemUtils.downloadFromUrl(url, ConstantsUtils.CAMINHO_FOTO+codigo+".jpg");
 										newFoto = "true";
 									} else {
 										newFoto = "false";
@@ -364,15 +268,15 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 
 									if (!nome.equals("")){
 										if (!database.isNameExist4DifCodigo(newName, codigo)){
-											if (!newTel.equals("(Não Cadastrado)") || !newCel.equals("(Não Cadastrado)") || !newEmail.equals("(Não Cadastrado)")){
+											if (!newTel.equals("(Nï¿½o Cadastrado)") || !newCel.equals("(Nï¿½o Cadastrado)") || !newEmail.equals("(Nï¿½o Cadastrado)")){
 												database.updateContato(codigo, newName, newTel, newCel, newEmail, newFoto);												
 												alertas.showSimpleDialog("Editado", "Contato Editado Com Sucesso!", AgendaTelefonicaBoaActivity.this);
-												InitListaContatos();
+												iniciaListaContatos();
 											} else {
 												alertas.showSimpleDialog("Contato", "Precisa ter ao menos um meio de contato!", AgendaTelefonicaBoaActivity.this);
 											}
 										} else {
-											alertas.showSimpleDialog("Nome", "Este nome já existe em sua lista!", AgendaTelefonicaBoaActivity.this);
+											alertas.showSimpleDialog("Nome", "Este nome jï¿½ existe em sua lista!", AgendaTelefonicaBoaActivity.this);
 										}
 
 									}else {
@@ -388,7 +292,7 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 
 						@Override
 						public void onClick(View v) {
-							InitListaContatos();						
+							iniciaListaContatos();						
 						}
 					});
 
@@ -402,11 +306,11 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
 									database.ExcluirContato(Codigo);
-									File file = new File(CAMINHO_FOTO+Codigo+".jpg");
+									File file = new File(ConstantsUtils.CAMINHO_FOTO+Codigo+".jpg");
 									if (file.exists()){
 										file.delete();
 									}
-									InitListaContatos();
+									iniciaListaContatos();
 								}
 							}, new OnClickListener() {
 
@@ -422,7 +326,7 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 
 			});
 		} else {
-			alertas.showSimpleDialog("Nenhum Contato", "Você não tem nenhum contato cadastrado!", AgendaTelefonicaBoaActivity.this);
+			alertas.showSimpleDialog("Nenhum Contato", "Vocï¿½ nï¿½o tem nenhum contato cadastrado!", AgendaTelefonicaBoaActivity.this);
 		}
 	}
 
@@ -450,13 +354,14 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 							url = ed_editar_foto.getText().toString();
 
 							if (!url.equals("")){
-								new Progresso4Edit().execute(url);
+								estaEditando = true;
+								new Progresso().execute(url);
 							}	else {
 								alertas.showSimpleDialog("Foto", "Digite um caminho da web para carregar a foto!", AgendaTelefonicaBoaActivity.this);
 								isNewFoto = false;
 								Bitmap bm = null;
 
-								File file = new File(CAMINHO_FOTO+cod+".jpg");
+								File file = new File(ConstantsUtils.CAMINHO_FOTO+cod+".jpg");
 
 								if (file.exists()){
 									bm = BitmapFactory.decodeFile(file.getPath());
@@ -481,7 +386,7 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 					isCancelButton = false;
 					Bitmap bm = null;
 
-					File file = new File(CAMINHO_FOTO+cod+".jpg");
+					File file = new File(ConstantsUtils.CAMINHO_FOTO+cod+".jpg");
 					if (file.exists()){
 						bm = BitmapFactory.decodeFile(file.getPath());
 						imageAlter.setImageBitmap(bm);
@@ -519,13 +424,14 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 							url = ed_editar_foto.getText().toString();
 
 							if (!url.equals("")){
-								new Progresso4Edit().execute(url);
+								estaEditando = true;
+								new Progresso().execute(url);
 							} else {
 								alertas.showSimpleDialog("Foto", "Digite um caminho da web para carregar a foto!", AgendaTelefonicaBoaActivity.this);
 								isNewFoto = false;
 								Bitmap bm = null;
 
-								File file = new File(CAMINHO_FOTO+cod+".jpg");
+								File file = new File(ConstantsUtils.CAMINHO_FOTO+cod+".jpg");
 
 								if (file.exists()){
 									bm = BitmapFactory.decodeFile(file.getPath());
@@ -553,13 +459,14 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 				url = ed_editar_foto.getText().toString();
 
 				if (!url.equals("")){
-					new Progresso4Edit().execute(url);
+					estaEditando = true;
+					new Progresso().execute(url);
 				}	else {
 					alertas.showSimpleDialog("Foto", "Digite um caminho da web para carregar a foto!", AgendaTelefonicaBoaActivity.this);
 					isNewFoto = false;
 					Bitmap bm = null;
 
-					File file = new File(CAMINHO_FOTO+cod+".jpg");
+					File file = new File(ConstantsUtils.CAMINHO_FOTO+cod+".jpg");
 
 					if (file.exists()){
 						bm = BitmapFactory.decodeFile(file.getPath());
@@ -576,6 +483,8 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 		});
 	}
 
+
+
 	public class Progresso extends AsyncTask<String, String, String>{
 		ProgressDialog pg;
 		@Override
@@ -588,97 +497,34 @@ public class AgendaTelefonicaBoaActivity extends Activity {
 
 		@Override
 		protected String doInBackground(String... urls) {
-			Drawable d = LoadImagemFromWebOperations(url);	
-			setDrawable = d;
+			setDrawable = ImagemUtils.loadImagemFromWebOperations(url);
 			return null;
 		}
 		@Override
 		protected void onPostExecute(String result) {
 			pg.dismiss();
-			if (setDrawable != null){
-				imagemLoad.setImageDrawable(setDrawable);
-				isFotoCarregada = true;
-			} else {
-				isFotoCarregada = false;
-				imagemLoad.setImageResource(R.drawable.icon);
-				alertas.showSimpleDialog("Foto", "URL Inválido!", AgendaTelefonicaBoaActivity.this);
-			}			
+			if(estaEditando){
+				if (setDrawable != null){
+					imageAlter.setImageDrawable(setDrawable);
+					isNewFoto = true;
+				} else {
+					isNewFoto = false;
+					imageAlter.setImageResource(R.drawable.icon);
+					alertas.showSimpleDialog("Foto", "URL Invï¿½lido!", AgendaTelefonicaBoaActivity.this);
+				}	
+			}else{
+				if (setDrawable != null){
+					imagemLoad.setImageDrawable(setDrawable);
+					isFotoCarregada = true;
+				} else {
+					isFotoCarregada = false;
+					imagemLoad.setImageResource(R.drawable.icon);
+					alertas.showSimpleDialog("Foto", "URL Invï¿½lido!", AgendaTelefonicaBoaActivity.this);
+				}	
+			}
+					
 		}		
 	}
-
-	public class Progresso4Edit extends AsyncTask<String, String, String>{
-		ProgressDialog pg;
-		@Override
-		protected void onPreExecute() {
-			pg = new ProgressDialog(AgendaTelefonicaBoaActivity.this);
-			pg.setTitle("Aguarde...");
-			pg.setMessage("Carregando foto!");
-			pg.show();
-		}
-
-		@Override
-		protected String doInBackground(String... urls) {
-			Drawable d = LoadImagemFromWebOperations(url);	
-			setDrawable = d;
-			return null;
-		}
-		@Override
-		protected void onPostExecute(String result) {
-			pg.dismiss();
-			if (setDrawable != null){
-				imageAlter.setImageDrawable(setDrawable);
-				isNewFoto = true;
-			} else {
-				isNewFoto = false;
-				imageAlter.setImageResource(R.drawable.icon);
-				alertas.showSimpleDialog("Foto", "URL Inválido!", AgendaTelefonicaBoaActivity.this);
-			}			
-		}		
-	}
-
-	public Drawable  LoadImagemFromWebOperations(String url){
-		try{		
-			InputStream is = (InputStream) new URL(url).getContent();	
-
-			Drawable d = Drawable.createFromStream(is, "src name");
-
-			return d;
-		}catch(Exception e){
-			Log.e("IMAGEM", "Exception: não foi possível carregar imagem... "+e.toString());
-			return null;
-		}
-	}
-
-	public void DownloadFromUrl(String fileURL, String fileName){
-		try{
-			File arquivo = new File(fileName);
-			if (!arquivo.exists()){
-				arquivo.createNewFile();
-			}
-
-			URL url = new URL(fileURL);
-			File file = new File(fileName);
-
-			URLConnection cURL = url.openConnection();
-
-			InputStream is = cURL.getInputStream();
-			BufferedInputStream bis = new BufferedInputStream(is);
-
-			ByteArrayBuffer	baf = new ByteArrayBuffer(50);
-			int current = 0;
-			while ((current = bis.read()) != -1){
-				baf.append((byte)current);
-			}
-
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(baf.toByteArray());
-			fos.close();
-		}catch (IOException e){
-			Log.i("IOException", e.toString());
-		}
-	}
-
-
 }
 
 
