@@ -1,0 +1,132 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:isScrollContainer="true"
+    android:scrollbarAlwaysDrawVerticalTrack="true"
+    android:scrollbarStyle="outsideInset"
+    android:scrollbars="vertical" >
+
+    <LinearLayout
+        style="@style/FundoVertical" >
+
+        <TextView
+            style="@style/FillWrap" 
+            android:gravity="center"
+            android:text="Adicionar Contato"
+            android:textAppearance="?android:attr/textAppearanceLarge" >
+        </TextView>
+
+        <TableLayout style="@style/FillWrap" >
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/textView2"
+                    style="@style/WrapWrap"
+                    android:text="Nº " >
+                </TextView>
+
+                <EditText
+                    android:id="@+adicionar_contato/campo_codigo"
+                    style="@style/WrapWrap"
+                    android:enabled="false" >
+                </EditText>
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    style="@style/WrapWrap"
+                    android:text="Nome: " >
+                </TextView>
+
+                <EditText
+                    android:id="@+adicionar_contato/campo_nome"
+                    android:inputType="textCapSentences"
+                    style="@style/EditTextPadrao" >
+                </EditText>
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    style="@style/WrapWrap"
+                    android:text="Telefone: " >
+                </TextView>
+
+                <EditText
+                    android:id="@+adicionar_contato/campo_telefone"
+                    android:inputType="number"
+                    style="@style/EditTextPadrao" >
+                </EditText>
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    style="@style/WrapWrap"
+                    android:text="Celular: " >
+                </TextView>
+
+                <EditText
+                    android:id="@+adicionar_contato/campo_celular"
+                    android:inputType="number"
+                    style="@style/EditTextPadrao" >
+                </EditText>
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    style="@style/WrapWrap"
+                    android:text="E-Mail: " >
+                </TextView>
+
+                <EditText
+                    android:id="@+adicionar_contato/campo_email"
+                    android:inputType="textEmailAddress"
+                    style="@style/EditTextPadrao" >
+                </EditText>
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    style="@style/WrapWrap"
+                    android:text="Foto: " >
+                </TextView>
+
+                <EditText
+                    android:id="@+adicionar_contato/EdFoto"
+                    style="@style/EditTextPadrao" >
+                </EditText>
+            </TableRow>
+        </TableLayout>
+
+        <Button
+            android:id="@+adicionar_contato/botao_carregarimagem"
+            style="@style/FillWrap"
+            android:text="Carregar Foto" >
+        </Button>
+
+        <ImageView
+            android:id="@+adicionar_contato/FotoLoad"
+            style="@style/FillWrap"
+            android:src="@drawable/icon" >
+        </ImageView>
+
+        <Button
+            android:id="@+adicionar_contato/botao_Adicionar"
+            style="@style/FillWrap"
+            android:text="Adicionar Contato" >
+        </Button>
+
+        <Button
+            android:id="@+adicionar_contato/botao_Cancelar"
+            style="@style/FillWrap"
+            android:text="Cancelar" >
+        </Button>
+        
+    </LinearLayout>
+
+</ScrollView>

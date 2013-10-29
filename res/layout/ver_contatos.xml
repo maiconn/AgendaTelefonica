@@ -11,8 +11,6 @@
 	<LinearLayout android:id="@+id/linearLayout3"
 		android:layout_height="wrap_content" android:layout_width="fill_parent"
 		android:orientation="vertical">
-		<Button android:layout_height="wrap_content" android:id="@+verContatos/botao_voltar"
-			android:text="Voltar" android:layout_width="fill_parent"></Button>
 	</LinearLayout>
 	<LinearLayout android:id="@+id/linearLayout2"
 		android:layout_height="wrap_content" android:layout_width="fill_parent"
